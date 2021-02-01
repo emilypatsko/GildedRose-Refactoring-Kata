@@ -57,11 +57,30 @@ export class GildedRose {
     handleRegularItems(item) {
         if (item.name != 'Aged Brie' && 
             item.name != 'Backstage passes to a TAFKAL80ETC concert' && 
-            item.name != 'Sulfuras, Hand of Ragnaros') {
+            item.name != 'Sulfuras, Hand of Ragnaros' &&
+            !item.name.startsWith("Conjured")) {
             if (item.quality > 0) {
                 item.quality--;
             }
             item.sellIn--;
+            if (item.sellIn < 0 && item.quality > 0) {
+                item.quality--;
+            }
+        }
+    }
+
+    handleConjuredItems(item) {
+        if (item.name.startsWith("Conjured")) {
+            if (item.quality > 1) {
+                item.quality--;
+            } 
+            if (item.quality > 0) {
+                item.quality--;
+            }
+            item.sellIn--;
+            if (item.sellIn < 0 && item.quality > 1) {
+                item.quality--;
+            }
             if (item.sellIn < 0 && item.quality > 0) {
                 item.quality--;
             }
@@ -74,6 +93,7 @@ export class GildedRose {
             this.handleAgedBrie(this.items[i]);
             this.handleBackstagePasses(this.items[i]);
             this.handleRegularItems(this.items[i]);
+            this.handleConjuredItems(this.items[i]);
         }
         return this.items;
     }

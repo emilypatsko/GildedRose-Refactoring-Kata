@@ -15,8 +15,7 @@ describe('Gilded Rose', function () {
             new Item("Backstage passes to a TAFKAL80ETC concert", 15, 20),
             new Item("Backstage passes to a TAFKAL80ETC concert", 10, 49),
             new Item("Backstage passes to a TAFKAL80ETC concert", 5, 49),
-            // this conjured item does not work properly yet
-            // new Item("Conjured Mana Cake", 3, 6)];
+            new Item("Conjured Mana Cake", 3, 6)
         ];
         const gildedRose = new GildedRose(items);
 
@@ -38,7 +37,7 @@ describe('Gilded Rose', function () {
             new Item("Backstage passes to a TAFKAL80ETC concert", 7, 31),
             new Item("Backstage passes to a TAFKAL80ETC concert", 2, 50),
             new Item("Backstage passes to a TAFKAL80ETC concert", -3, 0),
-            //    new Item("Conjured Mana Cake", -5, 0)
+            new Item("Conjured Mana Cake", -5, 0)
         ];
 
         // Assert
@@ -97,5 +96,20 @@ describe('Gilded Rose', function () {
             new Item('Elixir of the Weasel', -2, 0),
             new Item('Elixir of the Beaver', -1, 1)
         ])
+    });
+
+    it('should degrade the quality of conjured items twice as fast', function () {
+        const gildedRose = new GildedRose([
+            new Item('Conjured Mana Cake', 2, 13),
+            new Item('Conjured Chocolate Cake', 1, 13)
+        ]);
+        for (let i = 0; i < 4; i++) {
+            gildedRose.updateQuality();
+        }
+        const updatedItems = gildedRose.items;
+        expect(updatedItems).to.deep.include.members([
+            new Item('Conjured Mana Cake', -2, 1),
+            new Item('Conjured Chocolate Cake', -3, 0)
+        ]);
     });
 });
