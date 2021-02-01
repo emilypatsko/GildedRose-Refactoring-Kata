@@ -3,14 +3,9 @@ import { Item, GildedRose } from '../app/gilded-rose';
 
 describe('Gilded Rose', function () {
 
-    it('should foo', function() {
-        const gildedRose = new GildedRose([ new Item('foo', 0, 0) ]);
-        const items = gildedRose.updateQuality();
-        expect(items[0].name).to.equal('foo');
-    });
+    it('should pass the Golden Master test', function() {
 
-    // Arrange
-    it('should update quality correctly', function() {
+        // Arrange
         const items = [
             new Item("+5 Dexterity Vest", 10, 20), //
             new Item("Aged Brie", 2, 0), //
@@ -48,6 +43,27 @@ describe('Gilded Rose', function () {
 
         // Assert
         expect(updatedItems).to.deep.include.members(testArr);        
-    })
+    });
 
+    it('should never change the sellIn or quality of Sulfuras', function() {
+        const gildedRose = new GildedRose([ new Item('Sulfuras, Hand of Ragnaros', 0, 80) ]);
+        const updatedItems = gildedRose.updateQuality();
+        expect(updatedItems[0].sellIn).to.equal(0);
+        expect(updatedItems[0].quality).to.equal(80);
+    });
+
+    it('should calculate quality of backstage passes correctly', function() {
+        const gildedRose = new GildedRose([ 
+            new Item('Backstage passes to a TAFKAL80ETC concert', 6, 10),
+            new Item('Backstage passes to a TAFKAL80ETC concert', 12, 36)
+        ]);
+        for (let i = 0; i < 8; i++) {
+            gildedRose.updateQuality();
+        }
+        const updatedItems = gildedRose.items;
+        expect(updatedItems).to.deep.include.members([
+            new Item('Backstage passes to a TAFKAL80ETC concert', -2, 0),
+            new Item('Backstage passes to a TAFKAL80ETC concert', 4, 50)
+        ]);
+    })
 });
